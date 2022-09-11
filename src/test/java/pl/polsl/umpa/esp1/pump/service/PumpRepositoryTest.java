@@ -2,6 +2,7 @@ package pl.polsl.umpa.esp1.pump.service;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import pl.polsl.umpa.AbstractSmartHomeComponent;
 import pl.polsl.umpa.esp1.pump.PumpState;
@@ -12,7 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 @Component
-public class PumpRepositoryTest {
+public class PumpRepositoryTest implements CommandLineRunner {
     private PumpRepository pumpRepository;
 
     @Autowired
@@ -20,7 +21,6 @@ public class PumpRepositoryTest {
         this.pumpRepository = pumpRepository;
     }
 
-    @Test
     public void test() {
         Date hourAgo = Date.from(Instant.now().minus(Duration.ofHours(1)));
         Date now = new Date();
@@ -31,5 +31,10 @@ public class PumpRepositoryTest {
         List<PumpState> pumpStates = this.pumpRepository.findPumpStatesByRecordDateBetween(hourAgo, hourLater);
 
         assert !pumpStates.isEmpty();
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        test();
     }
 }

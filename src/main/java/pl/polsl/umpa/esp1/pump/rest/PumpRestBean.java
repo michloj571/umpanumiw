@@ -33,7 +33,7 @@ public class PumpRestBean {
 
     @RequestMapping(method = RequestMethod.POST, path = "/speed")
     public ResponseEntity<PumpDataDto> setPumpSpeed(@RequestBody PumpSetParameterRequest pumpSetParameterRequest) {
-
+        return null;
     }
 
 }
