@@ -3,7 +3,6 @@ package pl.polsl.umpa.esp1.pump.service;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractSmartHomeComponent;
 import pl.polsl.umpa.esp1.pump.PumpState;
 
@@ -11,8 +10,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @Component
 public class PumpRepositoryTest {

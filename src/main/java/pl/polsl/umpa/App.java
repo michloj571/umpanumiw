@@ -17,13 +17,6 @@ public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class);
-
     }
 
-    public void test() {
-        PumpState pumpState = new PumpState(new Date());
-        pumpState.setState(State.ON);
-        this.pumpRepository.save(pumpState);
-
-    }
 }

@@ -28,7 +28,7 @@ public class MoveDetectorRestBean {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<MoveDetectorDataDto> readMoveDetectorData(@RequestBody MoveDetectorDataReadRequest moveDetectorDataReadRequest){
-        MoveDetector moveDetector = this.moveDetectorService.getMoveDetectorData(moveDetectorDataReadRequest.moveDetectorURL);
+        MoveDetector moveDetector = this.moveDetectorService.getMoveDetectorData(moveDetectorDataReadRequest.detectorURL());
         return ResponseEntity.status(HttpStatus.OK).body(this.moveDetectorMapper.mapDataToDto(moveDetector));
     }
 

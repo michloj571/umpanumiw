@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.umpa.esp1.sprinkler.Sprinkler;
 import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerDataDto;
+import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerDataReadRequest;
 import pl.polsl.umpa.esp1.sprinkler.service.SprinklerService;
 
 
@@ -20,14 +21,14 @@ public class SprinklerRestBean {
     private SprinklerService sprinklerService;
 
     @Autowired
-    public SprinklerRestBean(SprinklerService sprinklerService){
+    public SprinklerRestBean(SprinklerService sprinklerService, SprinklerMapper sprinklerMapper){
         this.sprinklerService = sprinklerService;
+        this.sprinklerMapper = sprinklerMapper;
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<SprinklerDataDto> postPumpData(@RequestBody SprinklerDataDto sprinklerDataDto) {
-        // Pump pump = this.pumpService.getPumpData(pumpDataReadRequest.pumpURL());
-        Sprinkler sprinkler = this.sprinklerService.getSprinklerData();
+    public ResponseEntity<SprinklerDataDto> postPumpData(@RequestBody SprinklerDataReadRequest sprinklerDataReadRequest) {
+        Sprinkler sprinkler = this.sprinklerService.getSprinklerData(sprinklerDataReadRequest.pumpURL());
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
