@@ -43,20 +43,4 @@ public class PumpRestBean {
         return null;
     }
 
-    @Autowired
-    private PumpRepository pumpRepository;
-
-    @RequestMapping(method = RequestMethod.GET, path = "/test")
-    public void test() {
-        Date hourAgo = Date.from(Instant.now().minus(Duration.ofHours(1)));
-        Date now = new Date();
-        Date hourLater = Date.from(Instant.now().plus(Duration.ofHours(1)));
-        PumpState pumpState = new PumpState(now);
-        pumpState.setState(AbstractSmartHomeComponent.State.ON);
-        this.pumpRepository.save(pumpState);
-        List<PumpState> pumpStates = this.pumpRepository.findPumpStatesByRecordDateBetween(hourAgo, hourLater);
-
-        assert !pumpStates.isEmpty();
-    }
-
 }
