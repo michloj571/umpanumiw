@@ -7,11 +7,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import pl.polsl.umpa.AbstractSmartHomeComponent;
 import pl.polsl.umpa.esp1.pump.PumpState;
 import pl.polsl.umpa.esp1.pump.dto.PumpDataDto;
 import pl.polsl.umpa.esp1.pump.dto.PumpDataReadRequest;
 import pl.polsl.umpa.esp1.pump.dto.PumpSetParameterRequest;
+import pl.polsl.umpa.esp1.pump.service.PumpRepository;
 import pl.polsl.umpa.esp1.pump.service.PumpService;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/pump")
@@ -34,6 +41,22 @@ public class PumpRestBean {
     @RequestMapping(method = RequestMethod.POST, path = "/speed")
     public ResponseEntity<PumpDataDto> setPumpSpeed(@RequestBody PumpSetParameterRequest pumpSetParameterRequest) {
         return null;
+    }
+
+    @Autowired
+    private PumpRepository pumpRepository;
+
+    @RequestMapping(method = RequestMethod.GET, path = "/test")
+    public void test() {
+        Date hourAgo = Date.from(Instant.now().minus(Duration.ofHours(1)));
+        Date now = new Date();
+        Date hourLater = Date.from(Instant.now().plus(Duration.ofHours(1)));
+        PumpState pumpState = new PumpState(now);
+        pumpState.setState(AbstractSmartHomeComponent.State.ON);
+        this.pumpRepository.save(pumpState);
+        List<PumpState> pumpStates = this.pumpRepository.findPumpStatesByRecordDateBetween(hourAgo, hourLater);
+
+        assert !pumpStates.isEmpty();
     }
 
 }
