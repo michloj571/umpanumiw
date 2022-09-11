@@ -6,7 +6,7 @@ import pl.polsl.umpa.esp2.roomthermometer.dto.RoomThermometerDataDto;
 
 @Component
 public class RoomThermometerMapper {
-    public RoomThermometerDataDto mapDataToDto(RoomThermometer poolThermometer) {
+    public RoomThermometerDataDto mapDataToDto(RoomThermometer roomThermometer) {
         return null; // todo
     }
 }

@@ -12,7 +12,7 @@ public class GateService extends AbstractServiceComponent {
     public GateService() {
     }
 
-    public Gate detGateData(String gateURL) {
+    public Gate getGateData(String gateURL) {
         return this.sendEspRequest(
                 gateURL, null,
                 Gate.class, RequestType.GET

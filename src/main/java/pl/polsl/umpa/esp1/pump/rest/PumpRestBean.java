@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pl.polsl.umpa.esp1.pump.Pump;
+import pl.polsl.umpa.esp1.pump.PumpState;
 import pl.polsl.umpa.esp1.pump.dto.PumpDataDto;
 import pl.polsl.umpa.esp1.pump.dto.PumpDataReadRequest;
 import pl.polsl.umpa.esp1.pump.dto.PumpSetParameterRequest;
@@ -27,7 +27,7 @@ public class PumpRestBean {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<PumpDataDto> readPumpData(@RequestBody PumpDataReadRequest pumpDataReadRequest) {
-        Pump pump = this.pumpService.getPumpData(pumpDataReadRequest.pumpURL());
+        PumpState pump = this.pumpService.getPumpData(pumpDataReadRequest.pumpURL());
         return ResponseEntity.status(HttpStatus.OK).body(this.pumpMapper.mapDataToDto(pump));
     }
 
