@@ -1,4 +1,8 @@
 package pl.polsl.umpa.esp3.smartPlug.dto;
 
-public class SmartPlugSetParameterRequest {
+import com.fasterxml.jackson.annotation.JsonInclude;
+import static com.fasterxml.jackson.annotation.JsonInclude.*;
+
+@JsonInclude(Include.NON_NULL)
+public record SmartPlugSetParameterRequest(int newSpeed) {
 }

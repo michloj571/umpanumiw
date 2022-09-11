@@ -1,4 +1,4 @@
 package pl.polsl.umpa.esp2.gate.dto;
 
-public class GateDataReadRequest {
+public record GateDataReadRequest(String gateURL) {
 }

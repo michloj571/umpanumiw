@@ -8,6 +8,6 @@ import java.util.Date;
 import java.util.List;
 
 @Repository
-interface PumpRepository extends MongoRepository<PumpState, String> {
+public interface PumpRepository extends MongoRepository<PumpState, String> {
     List<PumpState> findPumpStatesByRecordDateBetween(Date start, Date end);
 }

@@ -11,7 +11,7 @@ public abstract class AbstractSmartHomeComponent {
     private Date recordDate;
     private State state;
 
-    protected enum State {
+    public enum State {
         ON, OFF
     }
 
