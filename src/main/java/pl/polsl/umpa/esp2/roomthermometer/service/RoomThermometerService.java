@@ -14,8 +14,13 @@ public class RoomThermometerService extends AbstractServiceComponent {
 
     public RoomThermometer getPoolThermometerData(String roomThermometerURL) {
         return this.sendEspRequest(
-                roomThermometerURL, null,
-                RoomThermometer.class, RequestType.GET
+                RequestType.GET, roomThermometerURL, null,
+                RoomThermometer.class
         );
+    }
+    
+    @Override
+    public void onServerReset() {
+
     }
 }

@@ -11,6 +11,7 @@ import pl.polsl.umpa.esp1.poolthermometer.dto.PoolThermometerDataReadRequest;
 import pl.polsl.umpa.esp2.roomthermometer.RoomThermometer;
 import pl.polsl.umpa.esp2.roomthermometer.dto.RoomThermometerDataDto;
 import pl.polsl.umpa.esp2.roomthermometer.service.RoomThermometerService;
+
 ;
 
 @RestController

@@ -1,10 +1,10 @@
 package pl.polsl.umpa.esp2.roomthermometer;
 
-import pl.polsl.umpa.AbstractSmartHomeComponent;
+import pl.polsl.umpa.AbstractSmartHomeComponentState;
 
 import java.util.Date;
 
-public class RoomThermometer extends AbstractSmartHomeComponent {
+public class RoomThermometer extends AbstractSmartHomeComponentState {
 
     public RoomThermometer(Date recordDate) { super(recordDate); }
 }

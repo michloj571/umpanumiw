@@ -6,8 +6,11 @@ import pl.polsl.umpa.esp1.pump.PumpState;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
-public interface PumpRepository extends MongoRepository<PumpState, String> {
+interface PumpRepository extends MongoRepository<PumpState, String> {
     List<PumpState> findPumpStatesByRecordDateBetween(Date start, Date end);
+
+    Optional<PumpState> findFirstByOrderByRecordDateDesc();
 }

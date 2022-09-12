@@ -14,8 +14,13 @@ public class MoveDetectorService extends AbstractServiceComponent {
     }
 
     public MoveDetector getMoveDetectorData(String pumpURL){
-        return this.sendEspRequest(pumpURL, null,
-                                   MoveDetector.class, RequestType.GET);
+        return this.sendEspRequest(RequestType.GET, pumpURL, null,
+                                   MoveDetector.class);
+    }
+
+    @Override
+    public void onServerReset() {
+
     }
 
 }

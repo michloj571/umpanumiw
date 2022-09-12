@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pl.polsl.umpa.esp1.pump.dto.PumpDataDto;
-import pl.polsl.umpa.esp1.pump.dto.PumpDataReadRequest;
 import pl.polsl.umpa.esp2.movedetector.MoveDetector;
 import pl.polsl.umpa.esp2.movedetector.dto.MoveDetectorDataDto;
 import pl.polsl.umpa.esp2.movedetector.dto.MoveDetectorDataReadRequest;

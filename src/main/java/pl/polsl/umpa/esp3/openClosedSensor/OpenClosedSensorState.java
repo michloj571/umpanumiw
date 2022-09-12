@@ -4,8 +4,8 @@ import pl.polsl.umpa.AbstractSmartHomeComponentState;
 
 import java.util.Date;
 
-public class OpenClosedSensor extends AbstractSmartHomeComponentState {
-    public OpenClosedSensor(Date recordDate) {
+public class OpenClosedSensorState  extends AbstractSmartHomeComponentState {
+    public OpenClosedSensorState(Date recordDate) {
         super(recordDate);
     }
 }

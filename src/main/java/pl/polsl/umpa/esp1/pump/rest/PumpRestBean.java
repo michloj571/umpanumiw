@@ -1,5 +1,6 @@
 package pl.polsl.umpa.esp1.pump.rest;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,40 +8,36 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import pl.polsl.umpa.AbstractSmartHomeComponent;
+import pl.polsl.umpa.AbstractRestBean;
 import pl.polsl.umpa.esp1.pump.PumpState;
 import pl.polsl.umpa.esp1.pump.dto.PumpDataDto;
 import pl.polsl.umpa.esp1.pump.dto.PumpDataReadRequest;
 import pl.polsl.umpa.esp1.pump.dto.PumpSetParameterRequest;
-import pl.polsl.umpa.esp1.pump.service.PumpRepository;
 import pl.polsl.umpa.esp1.pump.service.PumpService;
-
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
-import java.util.List;
 
 @RestController
 @RequestMapping("/pump")
-public class PumpRestBean {
+public class PumpRestBean extends AbstractRestBean {
     private PumpService pumpService;
     private PumpMapper pumpMapper;
 
     @Autowired
     public PumpRestBean(PumpService pumpService, PumpMapper pumpMapper) {
+        super(LoggerFactory.getLogger(PumpService.class));
         this.pumpService = pumpService;
         this.pumpMapper = pumpMapper;
     }
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<PumpDataDto> readPumpData(@RequestBody PumpDataReadRequest pumpDataReadRequest) {
-        PumpState pump = this.pumpService.getPumpData(pumpDataReadRequest.pumpURL());
+        PumpState pump = this.pumpService.getPumpData();
         return ResponseEntity.status(HttpStatus.OK).body(this.pumpMapper.mapDataToDto(pump));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/speed")
-    public ResponseEntity<PumpDataDto> setPumpSpeed(@RequestBody PumpSetParameterRequest pumpSetParameterRequest) {
-        return null;
+    public ResponseEntity<PumpDataDto> setPumpParameter(@RequestBody PumpSetParameterRequest pumpSetParameterRequest) {
+        PumpState currentState = this.pumpService.setPumpParameters(pumpSetParameterRequest);
+        return ResponseEntity.status(HttpStatus.OK).body(this.pumpMapper.mapDataToDto(currentState));
     }
 
 }

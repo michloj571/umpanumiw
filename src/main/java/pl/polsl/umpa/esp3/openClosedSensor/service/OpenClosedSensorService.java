@@ -14,8 +14,13 @@ public class OpenClosedSensorService extends AbstractServiceComponent {
 
     public OpenClosedSensor getOpenClosedSensorData(String openClosedSensorURL) {
         return this.sendEspRequest(
-                openClosedSensorURL, null,
-                OpenClosedSensor.class, RequestType.GET
+                RequestType.GET, openClosedSensorURL, null,
+                OpenClosedSensor.class
         );
+    }
+
+    @Override
+    public void onServerReset() {
+
     }
 }

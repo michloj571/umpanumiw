@@ -2,11 +2,16 @@ package pl.polsl.umpa;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.annotation.PostConstruct;
+
 public abstract class AbstractServiceComponent {
+    private String componentUrl;
+
     protected enum RequestType {
         GET {
             @Override
@@ -32,7 +37,7 @@ public abstract class AbstractServiceComponent {
 
         protected abstract HttpMethod method();
 
-        protected WebClient webClient;
+        protected final WebClient webClient;
 
         RequestType() {
             this.webClient = WebClient.builder()
@@ -49,14 +54,36 @@ public abstract class AbstractServiceComponent {
         }
     }
 
+    protected AbstractServiceComponent(String componentUrl) {
+        this.componentUrl = componentUrl;
+    }
+
+    public String getComponentUrl() {
+        return componentUrl;
+    }
+
+    public void setComponentUrl(String componentUrl) {
+        this.componentUrl = componentUrl;
+    }
+
+    @PostConstruct
+    public abstract void onServerReset();
+
     protected <T, R> R sendEspRequest(
-            String url, T requestBody,
-            Class<R> responseBodyType,
-            RequestType requestType
+            RequestType requestType, String url, T requestBody,
+            Class<R> responseBodyType
     ) {
-        return requestType.headerUriSpec(url, requestBody)
-                .retrieve()
-                .bodyToMono(responseBodyType)
-                .block();
+        R result;
+        try {
+            result = requestType.headerUriSpec(url, requestBody)
+                    .retrieve()
+                    .bodyToMono(responseBodyType)
+                    .block();
+        } catch (Exception e) {
+            throw new ComponentCommunicationFailedException(
+                    "Cannot communicate with component: " + componentUrl, HttpStatus.FAILED_DEPENDENCY
+            );
+        }
+        return result;
     }
 }
