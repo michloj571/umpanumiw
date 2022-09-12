@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.umpa.esp1.poolthermometer.dto.PoolThermometerDataReadRequest;
-import pl.polsl.umpa.esp2.roomthermometer.RoomThermometer;
+import pl.polsl.umpa.esp2.roomthermometer.RoomThermometerState;
 import pl.polsl.umpa.esp2.roomthermometer.dto.RoomThermometerDataDto;
 import pl.polsl.umpa.esp2.roomthermometer.service.RoomThermometerService;
 
@@ -29,7 +29,7 @@ public class RoomThermometerRestBean {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<RoomThermometerDataDto> readPumpData(@RequestBody PoolThermometerDataReadRequest roomThermometerDataReadRequest) {
-        RoomThermometer roomThermometer = this.roomThermometerService.getPoolThermometerData(roomThermometerDataReadRequest.poolThermometerURL());
+        RoomThermometerState roomThermometer = this.roomThermometerService.getPoolThermometerData(roomThermometerDataReadRequest.poolThermometerURL());
         return ResponseEntity.status(HttpStatus.OK).body(this.roomThermometerMapper.mapDataToDto(roomThermometer));
     }
 }

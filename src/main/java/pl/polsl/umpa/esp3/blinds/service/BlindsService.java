@@ -4,11 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState;
-import pl.polsl.umpa.esp1.pump.PumpState;
-import pl.polsl.umpa.esp1.pump.PumpStateNotFoundException;
-import pl.polsl.umpa.esp1.pump.dto.EspPumpSetParameterRequest;
-import pl.polsl.umpa.esp1.pump.dto.PumpSetParameterRequest;
-import pl.polsl.umpa.esp3.blinds.Blinds;
+import pl.polsl.umpa.esp3.blinds.BlindsState;
 import pl.polsl.umpa.esp3.blinds.BlindsStateNotFoundException;
 import pl.polsl.umpa.esp3.blinds.dto.BlindsSetParameterRequest;
 import pl.polsl.umpa.esp3.blinds.dto.EspBlindsSetParameterRequest;
@@ -25,10 +21,10 @@ public class BlindsService extends AbstractServiceComponent {
         this.blindsRepository = blindsRepository;
     }
 
-    public Blinds getBlindsData() {
+    public BlindsState getBlindsData() {
         return this.sendEspRequest(
                 RequestType.GET, this.getComponentUrl(), null,
-                Blinds.class
+                BlindsState.class
         );
     }
 
@@ -39,29 +35,29 @@ public class BlindsService extends AbstractServiceComponent {
     private BlindsState setParameters(EspBlindsSetParameterRequest setParameterRequest) {
         return this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
-                setParameterRequest, PumpState.class
+                setParameterRequest, BlindsState.class
         );
     }
 
-    private BlindsState getLastPumpState() throws BlindsStateNotFoundException {
+    private BlindsState getLastBlindsState() throws BlindsStateNotFoundException {
         return this.blindsRepository.findFirstByOrderByRecordDateDesc()
                 .orElseThrow(() -> new BlindsStateNotFoundException("Cannot find last blinds state!"));
     }
 
-    private EspPumpSetParameterRequest mapFromRestRequest(PumpSetParameterRequest pumpSetParameterRequest) {
-        return new EspPumpSetParameterRequest(pumpSetParameterRequest.componentState());
+    private EspBlindsSetParameterRequest mapFromRestRequest(BlindsSetParameterRequest blindsSetParameterRequest) {
+        return new EspBlindsSetParameterRequest(blindsSetParameterRequest.componentState());
     }
 
     @Override
     public void onServerReset() {
-        PumpState pumpState;
+        BlindsState blindsState;
         try {
-            pumpState = this.getLastPumpState();
-        } catch (PumpStateNotFoundException e) {
-            pumpState = new PumpState(new Date());
-            pumpState.setState(AbstractSmartHomeComponentState.ComponentState.OFF);
-            this.setParameters(new EspPumpSetParameterRequest(AbstractSmartHomeComponentState.ComponentState.OFF));
-            this.pumpRepository.save(pumpState);
+            blindsState = this.getLastBlindsState();
+        } catch (BlindsStateNotFoundException e) {
+            blindsState = new BlindsState(new Date());
+            blindsState.setState(AbstractSmartHomeComponentState.ComponentState.OFF);
+            this.setParameters(new EspBlindsSetParameterRequest(AbstractSmartHomeComponentState.ComponentState.OFF));
+            this.blindsRepository.save(blindsState);
         }
     }
 }

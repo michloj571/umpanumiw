@@ -4,9 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
+import pl.polsl.umpa.esp1.pump.PumpState;
+import pl.polsl.umpa.esp1.pump.dto.EspPumpSetParameterRequest;
+import pl.polsl.umpa.esp1.pump.dto.PumpSetParameterRequest;
 import pl.polsl.umpa.esp1.sprinkler.SprinklerState;
 import pl.polsl.umpa.esp1.sprinkler.SprinklerStateNotFoundException;
 import pl.polsl.umpa.esp1.sprinkler.dto.EspSprinklerSetParameterRequest;
+import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerSetParameterRequest;
+import pl.polsl.umpa.esp3.blinds.BlindsState;
 
 import java.util.Date;
 
@@ -18,6 +23,17 @@ public class SprinklerService extends AbstractServiceComponent {
     public SprinklerService(SprinklerRepository sprinklerRepository) {
         super("Elo");
         this.sprinklerRepository = sprinklerRepository;
+    }
+
+    public SprinklerState getSprinklerData() {
+        return this.sendEspRequest(
+                RequestType.GET, this.getComponentUrl(), null,
+                SprinklerState.class
+        );
+    }
+
+    public SprinklerState setSprinklerParameters(SprinklerSetParameterRequest setParameterRequest) {
+        return this.setParameters(this.mapFromRestRequest(setParameterRequest));
     }
 
     private SprinklerState setParameters(EspSprinklerSetParameterRequest setParameterRequest) {
@@ -32,8 +48,8 @@ public class SprinklerService extends AbstractServiceComponent {
                 .orElseThrow(() -> new SprinklerStateNotFoundException("Cannot find last pump state!"));
     }
 
-    public SprinklerState getSprinklerData() {
-        return this.sendEspRequest(RequestType.GET, this.getComponentUrl(), null, SprinklerState.class);
+    private EspSprinklerSetParameterRequest mapFromRestRequest(SprinklerSetParameterRequest sprinklerSetParameterRequest) {
+        return new EspSprinklerSetParameterRequest(sprinklerSetParameterRequest.componentState());
     }
 
     @Override
@@ -47,6 +63,5 @@ public class SprinklerService extends AbstractServiceComponent {
             this.setParameters(new EspSprinklerSetParameterRequest(ComponentState.OFF));
             this.sprinklerRepository.save(sprinklerState);
         }
-    }
-
+    } 
 }
