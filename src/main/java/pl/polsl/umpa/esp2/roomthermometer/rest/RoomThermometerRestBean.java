@@ -29,7 +29,7 @@ public class RoomThermometerRestBean {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<RoomThermometerDataDto> readPumpData(@RequestBody PoolThermometerDataReadRequest roomThermometerDataReadRequest) {
-        RoomThermometerState roomThermometer = this.roomThermometerService.getPoolThermometerData(roomThermometerDataReadRequest.poolThermometerURL());
+        RoomThermometerState roomThermometer = this.roomThermometerService.getRoomThermometerData(/*roomThermometerDataReadRequest.poolThermometerURL()*/);
         return ResponseEntity.status(HttpStatus.OK).body(this.roomThermometerMapper.mapDataToDto(roomThermometer));
     }
 }

@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface BlindsRepository extends MongoRepository<BlindsState, String> {
     List<BlindsState> findBlindsStatesByRecordDateBetween(Date start, Date end);
 
-    Optional<Object> findFirstByOrderByRecordDateDesc();
+    Optional<BlindsState> findFirstByOrderByRecordDateDesc();
 }

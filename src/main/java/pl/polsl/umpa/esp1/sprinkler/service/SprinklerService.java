@@ -21,7 +21,7 @@ public class SprinklerService extends AbstractServiceComponent {
 
     @Autowired
     public SprinklerService(SprinklerRepository sprinklerRepository) {
-        super("Elo");
+        super("url espa");
         this.sprinklerRepository = sprinklerRepository;
     }
 
@@ -45,7 +45,7 @@ public class SprinklerService extends AbstractServiceComponent {
 
     private SprinklerState getLastSprinklerState() throws SprinklerStateNotFoundException {
         return this.sprinklerRepository.findFirstByOrderByRecordDateDesc()
-                .orElseThrow(() -> new SprinklerStateNotFoundException("Cannot find last pump state!"));
+                .orElseThrow(() -> new SprinklerStateNotFoundException("Cannot find last sprinkler state!"));
     }
 
     private EspSprinklerSetParameterRequest mapFromRestRequest(SprinklerSetParameterRequest sprinklerSetParameterRequest) {

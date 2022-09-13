@@ -6,9 +6,9 @@ import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.esp3.smartPlug.SmartPlug;
 
 @Service
-public class SmartPlugService extends AbstractServiceComponent {
+public class SmartPlugService /*extends AbstractServiceComponent*/ {
 
-    @Autowired
+    /*@Autowired
     public SmartPlugService() {
 
     }
@@ -23,5 +23,5 @@ public class SmartPlugService extends AbstractServiceComponent {
     @Override
     public void onServerReset() {
 
-    }
+    }*/
 }
