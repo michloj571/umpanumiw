@@ -9,8 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface SprinklerRepository extends MongoRepository<SprinklerState, String> {
-
-    List<SprinklerState> findSprinklerWorkingHoursByRecordDateBetween();
-
     Optional<SprinklerState> findFirstByOrderByRecordDateDesc();
 }

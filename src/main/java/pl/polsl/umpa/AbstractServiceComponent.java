@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
+import pl.polsl.umpa.esp1.poolthermometer.PoolThermometerState;
 
 import javax.annotation.PostConstruct;
 
@@ -52,10 +54,14 @@ public abstract class AbstractServiceComponent {
                     .accept(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(requestBody));
         }
-    }
 
+    }
     protected AbstractServiceComponent(String componentUrl) {
         this.componentUrl = componentUrl;
+    }
+
+    protected final EspSetParameterRequest createEspRequest(ComponentState newState) {
+        return new EspSetParameterRequest(newState);
     }
 
     public String getComponentUrl() {

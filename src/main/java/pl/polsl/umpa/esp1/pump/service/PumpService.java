@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
+import pl.polsl.umpa.ComponentUrlConfiguration;
+import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp1.pump.PumpState;
 import pl.polsl.umpa.esp1.pump.PumpStateNotFoundException;
-import pl.polsl.umpa.esp1.pump.dto.EspPumpSetParameterRequest;
-import pl.polsl.umpa.esp1.pump.dto.PumpSetParameterRequest;
 
 import java.util.Date;
 
@@ -16,8 +16,8 @@ public class PumpService extends AbstractServiceComponent {
     private PumpRepository pumpRepository;
 
     @Autowired
-    public PumpService(PumpRepository pumpRepository) {
-        super("jakis url kij wie cos sie zrobi");
+    public PumpService(PumpRepository pumpRepository, ComponentUrlConfiguration componentUrlConfiguration) {
+        super(componentUrlConfiguration.getPump());
         this.pumpRepository = pumpRepository;
     }
 
@@ -28,11 +28,11 @@ public class PumpService extends AbstractServiceComponent {
         );
     }
 
-    public PumpState setPumpParameters(PumpSetParameterRequest setParameterRequest) {
-        return this.setParameters(this.mapFromRestRequest(setParameterRequest));
+    public PumpState setPumpState(ComponentState newState) {
+        return this.setParameters(super.createEspRequest(newState));
     }
 
-    private PumpState setParameters(EspPumpSetParameterRequest setParameterRequest) {
+    private PumpState setParameters(EspSetParameterRequest setParameterRequest) {
         return this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
                 setParameterRequest, PumpState.class
@@ -44,10 +44,6 @@ public class PumpService extends AbstractServiceComponent {
                 .orElseThrow(() -> new PumpStateNotFoundException("Cannot find last pump state!"));
     }
 
-    private EspPumpSetParameterRequest mapFromRestRequest(PumpSetParameterRequest pumpSetParameterRequest) {
-        return new EspPumpSetParameterRequest(pumpSetParameterRequest.componentState());
-    }
-
     @Override
     public void onServerReset() {
         PumpState pumpState;
@@ -56,7 +52,7 @@ public class PumpService extends AbstractServiceComponent {
         } catch (PumpStateNotFoundException e) {
             pumpState = new PumpState(new Date());
             pumpState.setState(ComponentState.OFF);
-            this.setParameters(new EspPumpSetParameterRequest(ComponentState.OFF));
+            this.setParameters(super.createEspRequest(ComponentState.OFF));
             this.pumpRepository.save(pumpState);
         }
     }

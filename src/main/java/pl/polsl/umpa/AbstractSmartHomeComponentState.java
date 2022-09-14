@@ -12,12 +12,25 @@ public abstract class AbstractSmartHomeComponentState {
     private ComponentState componentState;
 
     public enum ComponentState {
-        ON, OFF, OPENED, CLOSED
+        ON,
+        OFF,
+        OPENED,
+        CLOSED
 
     }
 
     public enum Unit {
-        CELSIUS, FAHRENHEIT
+        CELSIUS {
+            @Override
+            public String toString() {
+                return "°C";
+            }
+        }, FAHRENHEIT {
+            @Override
+            public String toString() {
+                return "°F";
+            }
+        };
     }
 
     public enum WeekDay {
