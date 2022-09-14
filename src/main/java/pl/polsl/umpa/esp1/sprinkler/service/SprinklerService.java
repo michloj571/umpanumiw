@@ -4,14 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
-import pl.polsl.umpa.esp1.pump.PumpState;
-import pl.polsl.umpa.esp1.pump.dto.EspPumpSetParameterRequest;
-import pl.polsl.umpa.esp1.pump.dto.PumpSetParameterRequest;
+import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.esp1.sprinkler.SprinklerState;
 import pl.polsl.umpa.esp1.sprinkler.SprinklerStateNotFoundException;
 import pl.polsl.umpa.esp1.sprinkler.dto.EspSprinklerSetParameterRequest;
 import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerSetParameterRequest;
-import pl.polsl.umpa.esp3.blinds.BlindsState;
 
 import java.util.Date;
 
@@ -20,8 +17,11 @@ public class SprinklerService extends AbstractServiceComponent {
     private SprinklerRepository sprinklerRepository;
 
     @Autowired
-    public SprinklerService(SprinklerRepository sprinklerRepository) {
-        super("url espa");
+    public SprinklerService(
+            SprinklerRepository sprinklerRepository,
+            ComponentUrlConfiguration componentUrlConfiguration
+    ) {
+        super(componentUrlConfiguration.getSprinkler());
         this.sprinklerRepository = sprinklerRepository;
     }
 
@@ -63,5 +63,5 @@ public class SprinklerService extends AbstractServiceComponent {
             this.setParameters(new EspSprinklerSetParameterRequest(ComponentState.OFF));
             this.sprinklerRepository.save(sprinklerState);
         }
-    } 
+    }
 }

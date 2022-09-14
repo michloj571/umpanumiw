@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState;
+import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.esp3.blinds.BlindsState;
 import pl.polsl.umpa.esp3.blinds.BlindsStateNotFoundException;
 import pl.polsl.umpa.esp3.blinds.dto.BlindsSetParameterRequest;

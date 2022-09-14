@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
+import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.esp1.pump.PumpState;
 import pl.polsl.umpa.esp1.pump.PumpStateNotFoundException;
 import pl.polsl.umpa.esp1.pump.dto.EspPumpSetParameterRequest;
@@ -16,8 +17,8 @@ public class PumpService extends AbstractServiceComponent {
     private PumpRepository pumpRepository;
 
     @Autowired
-    public PumpService(PumpRepository pumpRepository) {
-        super("jakis url kij wie cos sie zrobi");
+    public PumpService(PumpRepository pumpRepository, ComponentUrlConfiguration componentUrlConfiguration) {
+        super(componentUrlConfiguration.getPump());
         this.pumpRepository = pumpRepository;
     }
 

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState;
+import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.esp2.gate.GateState;
 import pl.polsl.umpa.esp2.gate.GateStateNotFoundException;
 import pl.polsl.umpa.esp2.gate.dto.EspGateSetParameterRequest;
@@ -15,8 +16,8 @@ public class GateService extends AbstractServiceComponent {
 
     private GateRepository gateRepository;
     @Autowired
-    public GateService(GateRepository gateRepository) {
-        super("Gate here");
+    public GateService(GateRepository gateRepository, ComponentUrlConfiguration componentUrlConfiguration) {
+        super(componentUrlConfiguration.getGate());
         this.gateRepository = gateRepository;
     }
 

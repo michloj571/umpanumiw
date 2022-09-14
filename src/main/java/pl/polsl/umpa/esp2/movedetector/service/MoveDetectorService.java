@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
+import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.esp2.movedetector.MoveDetectorState;
 import pl.polsl.umpa.esp2.movedetector.MoveDetectorStateNotFoundException;
 import pl.polsl.umpa.esp2.movedetector.dto.EspMoveDetectorSetParameterRequest;
@@ -17,8 +18,11 @@ public class MoveDetectorService extends AbstractServiceComponent {
     private MoveDetectorRepository moveDetectorRepository;
 
     @Autowired
-    public MoveDetectorService(MoveDetectorRepository moveDetectorRepository) {
-        super("jakis url kij wie cos sie zrobi");
+    public MoveDetectorService(
+            MoveDetectorRepository moveDetectorRepository,
+            ComponentUrlConfiguration componentUrlConfiguration
+    ) {
+        super(componentUrlConfiguration.getMoveDetector());
         this.moveDetectorRepository = moveDetectorRepository;
     }
 

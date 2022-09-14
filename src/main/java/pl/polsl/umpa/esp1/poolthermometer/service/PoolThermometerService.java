@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
+import pl.polsl.umpa.ComponentUrlConfiguration;
 import pl.polsl.umpa.esp1.poolthermometer.PoolThermometerState;
 import pl.polsl.umpa.esp1.poolthermometer.ThermometerStateNotFoundException;
 import pl.polsl.umpa.esp1.poolthermometer.dto.EspPoolThermometerSetParameterRequest;
@@ -16,8 +17,11 @@ public class PoolThermometerService extends AbstractServiceComponent {
     private PoolThermometerRepository poolThermometerRepository;
 
     @Autowired
-    public PoolThermometerService(PoolThermometerRepository poolThermometerRepository) {
-        super("jakis url kij wie cos sie zrobi");
+    public PoolThermometerService(
+            PoolThermometerRepository poolThermometerRepository,
+            ComponentUrlConfiguration componentUrlConfiguration
+    ) {
+        super(componentUrlConfiguration.getPoolThermometer());
         this.poolThermometerRepository = poolThermometerRepository;
     }
 

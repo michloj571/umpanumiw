@@ -11,7 +11,6 @@ import javax.annotation.PostConstruct;
 
 public abstract class AbstractServiceComponent {
     private String componentUrl;
-
     protected enum RequestType {
         GET {
             @Override
