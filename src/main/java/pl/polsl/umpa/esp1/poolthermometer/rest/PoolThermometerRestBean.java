@@ -3,6 +3,7 @@ package pl.polsl.umpa.esp1.poolthermometer.rest;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,10 +29,16 @@ public class PoolThermometerRestBean extends AbstractRestBean {
         this.poolThermometerMapper = poolThermometerMapper;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<PoolThermometerDataDto> readPoolThermometerData() {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<String> readPoolThermometerData() {
         PoolThermometerState poolThermometerState = this.poolThermometerService.getPoolThermometerData();
-        return ResponseEntity.status(HttpStatus.OK).body(this.poolThermometerMapper.mapDataToDto(poolThermometerState));
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.TEXT_HTML)
+                .body(super.generateReport(
+                        "Pool thermometer", poolThermometerState.getState(),
+                        WebPageComponent.field("Temperature", "" + poolThermometerState.getTemperature() + poolThermometerState.getUnit()),
+                        WebPageComponent.field("Reading date", poolThermometerState.getRecordDate())
+                ));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/{newState}")

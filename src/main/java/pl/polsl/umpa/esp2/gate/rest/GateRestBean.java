@@ -28,10 +28,10 @@ public class GateRestBean extends AbstractRestBean {
         this.gateMapper = gateMapper;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<SmartHomeComponentStateDto> readGateData() {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<String> readGateData() {
         GateState gate = this.gateService.getGateData();
-        return ResponseEntity.status(HttpStatus.OK).body(this.gateMapper.mapDataToDto(gate));
+        return ResponseEntity.status(HttpStatus.OK).body(super.generateReport("Gate", gate.getState()));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/{newState}")

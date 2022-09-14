@@ -29,10 +29,12 @@ public class SprinklerRestBean extends AbstractRestBean {
         this.sprinklerMapper = sprinklerMapper;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<SmartHomeComponentStateDto> readSprinklerData() {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<String> readSprinklerData() {
         SprinklerState sprinkler = this.sprinklerService.getSprinklerData();
-        return ResponseEntity.status(HttpStatus.OK).body(this.sprinklerMapper.mapDataToDto(sprinkler));
+        return ResponseEntity.status(HttpStatus.OK).body(super.generateReport(
+                "Sprinkler", sprinkler.getState()
+        ));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/{newState}")

@@ -20,7 +20,17 @@ public abstract class AbstractSmartHomeComponentState {
     }
 
     public enum Unit {
-        CELSIUS, FAHRENHEIT
+        CELSIUS {
+            @Override
+            public String toString() {
+                return "°C";
+            }
+        }, FAHRENHEIT {
+            @Override
+            public String toString() {
+                return "°F";
+            }
+        };
     }
 
     public enum WeekDay {

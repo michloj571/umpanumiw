@@ -27,10 +27,10 @@ public class PumpRestBean extends AbstractRestBean {
         this.pumpMapper = pumpMapper;
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<SmartHomeComponentStateDto> readPumpData() {
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<String> readPumpData() {
         PumpState pump = this.pumpService.getPumpData();
-        return ResponseEntity.status(HttpStatus.OK).body(this.pumpMapper.mapPumpState(pump));
+        return ResponseEntity.status(HttpStatus.OK).body(super.generateReport("Pump", pump.getState()));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/{newState}")

@@ -28,9 +28,13 @@ public class MoveDetectorRestBean extends AbstractRestBean {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<MoveDetectorDataDto> readMoveDetectorData() {
+    public ResponseEntity<String> readMoveDetectorData() {
         MoveDetectorState moveDetector = this.moveDetectorService.getMoveDetectorData();
-        return ResponseEntity.status(HttpStatus.OK).body(this.moveDetectorMapper.mapDataToDto(moveDetector));
+        return ResponseEntity.status(HttpStatus.OK).
+                body(super.generateReport(
+                        "Move detector", moveDetector.getState(),
+                        WebPageComponent.field("Activated", moveDetector.isActivated())
+                ));
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/{newState}")
