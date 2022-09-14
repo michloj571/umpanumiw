@@ -1,5 +1,6 @@
 package pl.polsl.umpa;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
@@ -12,7 +13,10 @@ public abstract class AbstractSmartHomeComponentState {
     private ComponentState componentState;
 
     public enum ComponentState {
-        ON, OFF, OPENED, CLOSED
+        ON,
+        OFF,
+        OPENED,
+        CLOSED
 
     }
 

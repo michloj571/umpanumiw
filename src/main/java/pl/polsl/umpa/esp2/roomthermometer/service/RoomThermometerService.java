@@ -5,10 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
+import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp2.roomthermometer.RoomThermometerState;
-import pl.polsl.umpa.esp2.roomthermometer.ThermometerStateNotFoundException;
-import pl.polsl.umpa.esp2.roomthermometer.dto.EspRoomThermometerSetParameterRequest;
-import pl.polsl.umpa.esp2.roomthermometer.dto.RoomThermometerSetParameterRequest;
+import pl.polsl.umpa.esp2.roomthermometer.RoomThermometerStateNotFoundException;
 
 import java.util.Date;
 
@@ -32,35 +31,32 @@ public class RoomThermometerService extends AbstractServiceComponent {
         );
     }
 
-    public RoomThermometerState setRoomThermometerParameters(RoomThermometerSetParameterRequest setParameterRequest) {
-        return this.setParameters(this.mapFromRestRequest(setParameterRequest));
+    public RoomThermometerState setRoomThermometerComponentState(ComponentState newState) {
+        return this.setParameters(super.createEspRequest(newState));
     }
 
-    private RoomThermometerState setParameters(EspRoomThermometerSetParameterRequest setParameterRequest) {
+    private RoomThermometerState setParameters(EspSetParameterRequest setParameterRequest) {
         return this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
                 setParameterRequest, RoomThermometerState.class
         );
     }
 
-    private RoomThermometerState getLastRoomThermometerMeasurement() throws ThermometerStateNotFoundException {
+    private RoomThermometerState getLastRoomThermometerMeasurement() throws RoomThermometerStateNotFoundException {
         return this.roomThermometerRepository.findFirstByOrderByRecordDateDesc()
-                .orElseThrow(() -> new ThermometerStateNotFoundException("Cannot find last room thermometer measurement!"));
+                .orElseThrow(() -> new RoomThermometerStateNotFoundException("Cannot find last room thermometer measurement!"));
     }
 
-    private EspRoomThermometerSetParameterRequest mapFromRestRequest(RoomThermometerSetParameterRequest roomThermometerSetParameterRequest) {
-        return new EspRoomThermometerSetParameterRequest(roomThermometerSetParameterRequest.componentState());
-    }
-    
     @Override
     public void onServerReset() {
         RoomThermometerState roomThermometerState;
         try {
             roomThermometerState = this.getLastRoomThermometerMeasurement();
-        } catch (ThermometerStateNotFoundException e) {
+        } catch (RoomThermometerStateNotFoundException e) {
+            ComponentState emergencyState = ComponentState.OFF;
             roomThermometerState = new RoomThermometerState(new Date());
-            roomThermometerState.setState(ComponentState.OFF);
-            this.setParameters(new EspRoomThermometerSetParameterRequest(ComponentState.OFF));
+            roomThermometerState.setState(emergencyState);
+            this.setParameters(super.createEspRequest(emergencyState));
             this.roomThermometerRepository.save(roomThermometerState);
         }
     }

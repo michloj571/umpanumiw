@@ -5,10 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
+import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp1.poolthermometer.PoolThermometerState;
-import pl.polsl.umpa.esp1.poolthermometer.ThermometerStateNotFoundException;
-import pl.polsl.umpa.esp1.poolthermometer.dto.EspPoolThermometerSetParameterRequest;
-import pl.polsl.umpa.esp1.poolthermometer.dto.PoolThermometerSetParameterRequest;
+import pl.polsl.umpa.esp1.poolthermometer.PoolThermometerStateNotFoundException;
 
 import java.util.Date;
 
@@ -32,24 +31,20 @@ public class PoolThermometerService extends AbstractServiceComponent {
         );
     }
 
-    public PoolThermometerState setPoolThermometerParameters(PoolThermometerSetParameterRequest setParameterRequest) {
-        return this.setParameters(this.mapFromRestRequest(setParameterRequest));
+    public PoolThermometerState setPoolThermometerState(ComponentState newState) {
+        return this.setParameters(super.createEspRequest(newState));
     }
 
-    private PoolThermometerState setParameters(EspPoolThermometerSetParameterRequest setParameterRequest) {
+    private PoolThermometerState setParameters(EspSetParameterRequest setParameterRequest) {
         return this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
                 setParameterRequest, PoolThermometerState.class
         );
     }
 
-    private PoolThermometerState getLastPoolThermometerMeasurement() throws ThermometerStateNotFoundException {
+    private PoolThermometerState getLastPoolThermometerMeasurement() throws PoolThermometerStateNotFoundException {
         return this.poolThermometerRepository.findFirstByOrderByRecordDateDesc()
-                .orElseThrow(() -> new ThermometerStateNotFoundException("Cannot find last pool thermometer measurement!"));
-    }
-
-    private EspPoolThermometerSetParameterRequest mapFromRestRequest(PoolThermometerSetParameterRequest poolThermometerSetParameterRequest) {
-        return new EspPoolThermometerSetParameterRequest(poolThermometerSetParameterRequest.componentState());
+                .orElseThrow(() -> new PoolThermometerStateNotFoundException("Cannot find last pool thermometer measurement!"));
     }
 
     @Override
@@ -57,7 +52,7 @@ public class PoolThermometerService extends AbstractServiceComponent {
         PoolThermometerState poolThermometerState;
         try {
             poolThermometerState = this.getLastPoolThermometerMeasurement();
-        } catch (ThermometerStateNotFoundException e) {
+        } catch (PoolThermometerStateNotFoundException e) {
             poolThermometerState = new PoolThermometerState(new Date());
             poolThermometerState.setState(ComponentState.OFF);
         }

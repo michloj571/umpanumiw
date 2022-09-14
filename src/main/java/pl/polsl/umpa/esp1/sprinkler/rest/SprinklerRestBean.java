@@ -4,15 +4,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import pl.polsl.umpa.AbstractRestBean;
+import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
+import pl.polsl.umpa.SmartHomeComponentStateDto;
 import pl.polsl.umpa.esp1.sprinkler.SprinklerState;
-import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerDataDto;
-import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerDataReadRequest;
-import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerSetParameterRequest;
 import pl.polsl.umpa.esp1.sprinkler.service.SprinklerService;
 
 
@@ -31,14 +30,14 @@ public class SprinklerRestBean extends AbstractRestBean {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<SprinklerDataDto> readPumpData(@RequestBody SprinklerDataReadRequest pumpDataReadRequest) {
+    public ResponseEntity<SmartHomeComponentStateDto> readSprinklerData() {
         SprinklerState sprinkler = this.sprinklerService.getSprinklerData();
         return ResponseEntity.status(HttpStatus.OK).body(this.sprinklerMapper.mapDataToDto(sprinkler));
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/speed")
-    public ResponseEntity<SprinklerDataDto> setPumpParameter(@RequestBody SprinklerSetParameterRequest sprinklerSetParameterRequest) {
-        SprinklerState currentState = this.sprinklerService.setSprinklerParameters(sprinklerSetParameterRequest);
+    @RequestMapping(method = RequestMethod.POST, path = "/{newState}")
+    public ResponseEntity<SmartHomeComponentStateDto> setSprinklerComponentState(@PathVariable("newState") String newState) {
+        SprinklerState currentState = this.sprinklerService.setSprinklerState(ComponentState.valueOf(newState));
         return ResponseEntity.status(HttpStatus.OK).body(this.sprinklerMapper.mapDataToDto(currentState));
     }
 }

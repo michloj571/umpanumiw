@@ -5,10 +5,9 @@ import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
+import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp1.sprinkler.SprinklerState;
 import pl.polsl.umpa.esp1.sprinkler.SprinklerStateNotFoundException;
-import pl.polsl.umpa.esp1.sprinkler.dto.EspSprinklerSetParameterRequest;
-import pl.polsl.umpa.esp1.sprinkler.dto.SprinklerSetParameterRequest;
 
 import java.util.Date;
 
@@ -32,11 +31,11 @@ public class SprinklerService extends AbstractServiceComponent {
         );
     }
 
-    public SprinklerState setSprinklerParameters(SprinklerSetParameterRequest setParameterRequest) {
-        return this.setParameters(this.mapFromRestRequest(setParameterRequest));
+    public SprinklerState setSprinklerState(ComponentState newState) {
+        return this.setParameters(super.createEspRequest(newState));
     }
 
-    private SprinklerState setParameters(EspSprinklerSetParameterRequest setParameterRequest) {
+    private SprinklerState setParameters(EspSetParameterRequest setParameterRequest) {
         return this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
                 setParameterRequest, SprinklerState.class
@@ -48,19 +47,16 @@ public class SprinklerService extends AbstractServiceComponent {
                 .orElseThrow(() -> new SprinklerStateNotFoundException("Cannot find last sprinkler state!"));
     }
 
-    private EspSprinklerSetParameterRequest mapFromRestRequest(SprinklerSetParameterRequest sprinklerSetParameterRequest) {
-        return new EspSprinklerSetParameterRequest(sprinklerSetParameterRequest.componentState());
-    }
-
     @Override
     public void onServerReset() {
         SprinklerState sprinklerState;
         try {
             sprinklerState = this.getLastSprinklerState();
         } catch (SprinklerStateNotFoundException e) {
+            ComponentState newComponentState = ComponentState.OFF;
             sprinklerState = new SprinklerState(new Date());
-            sprinklerState.setState(ComponentState.OFF);
-            this.setParameters(new EspSprinklerSetParameterRequest(ComponentState.OFF));
+            sprinklerState.setState(newComponentState);
+            this.setParameters(super.createEspRequest(newComponentState));
             this.sprinklerRepository.save(sprinklerState);
         }
     }

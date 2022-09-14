@@ -5,16 +5,14 @@ import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
 import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
+import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp2.movedetector.MoveDetectorState;
 import pl.polsl.umpa.esp2.movedetector.MoveDetectorStateNotFoundException;
-import pl.polsl.umpa.esp2.movedetector.dto.EspMoveDetectorSetParameterRequest;
-import pl.polsl.umpa.esp2.movedetector.dto.MoveDetectorSetParameterRequest;
 
 import java.util.Date;
 
 @Service
 public class MoveDetectorService extends AbstractServiceComponent {
-
     private MoveDetectorRepository moveDetectorRepository;
 
     @Autowired
@@ -33,11 +31,11 @@ public class MoveDetectorService extends AbstractServiceComponent {
         );
     }
 
-    public MoveDetectorState setMoveDetectorParameters(MoveDetectorSetParameterRequest setParameterRequest) {
-        return this.setParameters(this.mapFromRestRequest(setParameterRequest));
+    public MoveDetectorState setMoveDetectorComponentState(ComponentState newState) {
+        return this.setParameters(super.createEspRequest(newState));
     }
 
-    private MoveDetectorState setParameters(EspMoveDetectorSetParameterRequest setParameterRequest) {
+    private MoveDetectorState setParameters(EspSetParameterRequest setParameterRequest) {
         return this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
                 setParameterRequest, MoveDetectorState.class
@@ -49,21 +47,19 @@ public class MoveDetectorService extends AbstractServiceComponent {
                 .orElseThrow(() -> new MoveDetectorStateNotFoundException("Cannot find last move detector state!"));
     }
 
-    private EspMoveDetectorSetParameterRequest mapFromRestRequest(MoveDetectorSetParameterRequest moveDetectorSetParameterRequest) {
-        return new EspMoveDetectorSetParameterRequest(moveDetectorSetParameterRequest.componentState());
-    }
-
     @Override
-    public void onServerReset() {
+    public void onServerReset() {// todo refactor all reset handlers
         MoveDetectorState moveDetectorState;
         try {
             moveDetectorState = this.getLastMoveDetectorState();
         } catch (MoveDetectorStateNotFoundException e) {
+            ComponentState emergencyState = ComponentState.OFF;
             moveDetectorState = new MoveDetectorState(new Date());
-            moveDetectorState.setState(ComponentState.OFF);
-            this.setParameters(new EspMoveDetectorSetParameterRequest(ComponentState.OFF));
+            moveDetectorState.setState(emergencyState);
+            this.setParameters(super.createEspRequest(emergencyState));
             this.moveDetectorRepository.save(moveDetectorState);
         }
+
     }
 
 }

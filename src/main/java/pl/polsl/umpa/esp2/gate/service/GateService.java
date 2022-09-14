@@ -3,11 +3,11 @@ package pl.polsl.umpa.esp2.gate.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.polsl.umpa.AbstractServiceComponent;
-import pl.polsl.umpa.AbstractSmartHomeComponentState;
+import pl.polsl.umpa.AbstractSmartHomeComponentState.ComponentState;
 import pl.polsl.umpa.ComponentUrlConfiguration;
+import pl.polsl.umpa.EspSetParameterRequest;
 import pl.polsl.umpa.esp2.gate.GateState;
 import pl.polsl.umpa.esp2.gate.GateStateNotFoundException;
-import pl.polsl.umpa.esp2.gate.dto.EspGateSetParameterRequest;
 
 import java.util.Date;
 
@@ -15,28 +15,34 @@ import java.util.Date;
 public class GateService extends AbstractServiceComponent {
 
     private GateRepository gateRepository;
+
     @Autowired
     public GateService(GateRepository gateRepository, ComponentUrlConfiguration componentUrlConfiguration) {
         super(componentUrlConfiguration.getGate());
         this.gateRepository = gateRepository;
     }
 
-    public GateState getGateData(String gateURL) {
+    public GateState getGateData() {
         return this.sendEspRequest(
-                RequestType.GET, gateURL, null,
+                RequestType.GET, this.getComponentUrl(), null,
                 GateState.class
         );
     }
-    private GateState setParameters(EspGateSetParameterRequest setParameterRequest) {
+
+    public GateState setGateComponentState(ComponentState newState) {
+        return this.setParameters(super.createEspRequest(newState));
+    }
+
+    private GateState getLastGateState() throws GateStateNotFoundException {
+        return this.gateRepository.findFirstByOrderByRecordDateDesc()
+                .orElseThrow(() -> new GateStateNotFoundException("Cannot find last gate state!"));
+    }
+
+    private GateState setParameters(EspSetParameterRequest setParameterRequest) {
         return this.sendEspRequest(
                 RequestType.POST, this.getComponentUrl(),
                 setParameterRequest, GateState.class
         );
-    }
-
-    public GateState getLastGateState() throws GateStateNotFoundException {
-        return this.gateRepository.findFirstByOrderByRecordDateDesc()
-                .orElseThrow(() -> new GateStateNotFoundException("Cannot find last gate state!"));
     }
 
     @Override
@@ -45,9 +51,10 @@ public class GateService extends AbstractServiceComponent {
         try {
             gateState = this.getLastGateState();
         } catch (GateStateNotFoundException e) {
+            ComponentState emergencyState = ComponentState.CLOSED;
             gateState = new GateState(new Date());
-            gateState.setState(AbstractSmartHomeComponentState.ComponentState.OFF);
-            this.setParameters(new EspGateSetParameterRequest(AbstractSmartHomeComponentState.ComponentState.OFF));
+            gateState.setState(emergencyState);
+            this.setParameters(super.createEspRequest(emergencyState));
             this.gateRepository.save(gateState);
         }
     }
