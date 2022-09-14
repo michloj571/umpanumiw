@@ -4,11 +4,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableConfigurationProperties(ComponentUrlConfiguration.class)
+@EnableConfigurationProperties({ComponentUrlConfiguration.class})
 @EnableMongoRepositories
-public class App {//TODO finalize esp request parameters, frontend
+@EnableScheduling
+public class App {//TODO frontend
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);

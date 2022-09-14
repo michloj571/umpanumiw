@@ -10,7 +10,6 @@ import pl.polsl.umpa.esp2.roomthermometer.RoomThermometerState;
 import pl.polsl.umpa.esp2.roomthermometer.dto.RoomThermometerDataDto;
 import pl.polsl.umpa.esp2.roomthermometer.service.RoomThermometerService;
 
-;
 
 @RestController
 @RequestMapping("/roomthermometer")

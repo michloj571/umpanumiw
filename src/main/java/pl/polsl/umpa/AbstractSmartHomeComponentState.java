@@ -1,6 +1,5 @@
 package pl.polsl.umpa;
 
-import com.fasterxml.jackson.annotation.JsonValue;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
